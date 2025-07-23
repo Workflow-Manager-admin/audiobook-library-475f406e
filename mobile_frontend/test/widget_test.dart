@@ -3,16 +3,25 @@ import 'package:flutter_test/flutter_test.dart';
 import 'package:mobile_frontend/main.dart';
 
 void main() {
-  testWidgets('App generation message displayed', (WidgetTester tester) async {
-    await tester.pumpWidget(const MyApp());
-
-    expect(find.text('mobile_frontend App is being generated...'), findsOneWidget);
-    expect(find.byType(CircularProgressIndicator), findsOneWidget);
+  testWidgets('App starts with bottom navigation and Store', (WidgetTester tester) async {
+    await tester.pumpWidget(const AudiobookApp());
+    await tester.pumpAndSettle();
+    expect(find.byType(BottomNavigationBar), findsOneWidget);
+    expect(find.text('Store'), findsOneWidget);
   });
 
-  testWidgets('App bar has correct title', (WidgetTester tester) async {
-    await tester.pumpWidget(const MyApp());
+  testWidgets('Navigation bar navigates to Library and Player', (WidgetTester tester) async {
+    await tester.pumpWidget(const AudiobookApp());
+    await tester.pumpAndSettle();
 
-    expect(find.text('mobile_frontend'), findsOneWidget);
+    // Tap Library tab
+    await tester.tap(find.text('Library'));
+    await tester.pumpAndSettle();
+    expect(find.text('You haven\'t purchased any audiobooks yet.\nVisit the Store!'), findsOneWidget);
+
+    // Tap Player tab
+    await tester.tap(find.text('Player'));
+    await tester.pumpAndSettle();
+    expect(find.text('No audiobook selected.'), findsOneWidget);
   });
 }
